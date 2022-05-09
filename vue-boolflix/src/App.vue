@@ -1,16 +1,20 @@
 <template>
 
-  <HeaderSite/>
+  <div id="app">
+    <HeaderSite />
+  </div>
+  
+
 </template>
 
 <script>
-import HeaderSite from "./components/HeaderSite.vue";
+import HeaderSite from './components/HeaderSite.vue';
 
 export default {
   name: 'App',
   components: {
     HeaderSite,
-  }
+  },
 }
 </script>
 
