@@ -26,7 +26,7 @@ export default {
         SearchMovies() {
             this.ThemoviedbApi = 'https://api.themoviedb.org/3/search/movie?api_key=193243e6ba454e23bb7950ff587b4977&language=it&include_adult=false&query='+ this.UserSearch
             axios
-            .get(this.movieApi)
+            .get(this.ThemoviedbApi)
             .then((result) => {
                 this.movieList = result.data.results
                 console.log(this.movieList);
