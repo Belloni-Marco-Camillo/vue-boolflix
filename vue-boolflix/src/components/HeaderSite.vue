@@ -8,7 +8,6 @@
         >
         <button @click="SearchMovies()">cerca film</button>
     </div>
-    
 </template>
 
 <script>
@@ -29,7 +28,11 @@ export default {
             .get(this.ThemoviedbApi)
             .then((result) => {
                 this.movieList = result.data.results
-                console.log(this.movieList);
+                this.movieList.forEach(movie => {
+                    console.log(movie.title); 
+                     
+                });
+                           
             })
         },
     },
