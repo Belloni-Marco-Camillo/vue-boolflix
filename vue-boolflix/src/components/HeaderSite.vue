@@ -1,22 +1,29 @@
 <template>
     <div class="container">
-        <div id="header" class="d-flex container justify-content-between">
-            <h1>prova header</h1>
-            <input 
+        <div id="header" class="d-flex mb-5 container justify-content-between">
+            <div class="header-sx d-flex">
+                <img src="./../assets/Netflix_logo.svg" alt="logo">
+                <ul class="d-flax text-white">
+                    <li> <a href="#"> home</a></li>
+                    <li> <a href="#"> TV Show</a></li>
+                    <li> <a href="#"> Movies</a></li>
+                    <li> <a href="#"> New & Popular</a></li>
+                    <li> <a href="#"> My List</a></li>
+                </ul>
+            </div>
+            <input
             type="text" 
-            placeholder="fai una ricerca" 
+            placeholder="title, people, genres" 
             v-model="UserSearch"
-            @keyup.enter="SearchMovies(), SearchShow()"
+            @keyup="SearchMovies(), SearchShow()"
             >
-            <button @click="SearchMovies(), SearchShow()">cerca film</button>
         </div>
 
 
 
 
-
-        <div class="row gy-3 gx-2">
-            <h2>film</h2>
+        <h2 class="text-start text-white">film</h2>
+        <div class="row flex-nowrap overflow-x gy-3 gx-2 mb-3">
             <div class="flip-card-container col-2" v-for="movie in movieList" :key="movie.id">
                 <div class="flip-card">
                     <div class="flip-card-front">
@@ -24,24 +31,25 @@
                         <img class="col-12 img-dimension" v-else :src="'https://upload.wikimedia.org/wikipedia/en/d/d6/Image_coming_soon.png'">
                     </div>
                     <div class="flip-card-back">
-                        <div> <span>titolo: </span>  {{movie.title}}</div>
-                        <div> <span>titolo originale: </span> {{movie.original_title}}</div>
-                        <lang-flag :iso="movie.original_language" />
-                        <div class="d-flex justify-content-center align-items-center">
+                        <img class="backprop-card" v-if="movie.poster_path !== null" :src="'https://image.tmdb.org/t/p/w342'+movie.backdrop_path">
+                        <div class="backprop-card" v-else> nessuna immagine di copertina </div>
+                        <div class="title-card"> <span>titolo: </span>  {{movie.title}}</div>
+                        <div class="originalTitle-card"> <span>titolo originale: </span> {{movie.original_title}}</div>
+                        <lang-flag class="lenguage-card" :iso="movie.original_language" />
+                        <div  class="vote-card d-flex justify-content-center align-items-center">
                             <div class="col-2"> {{movie.vote_average}}</div>
                             <Rate :readonly="true" class="rate-width" :length="5" :value="vote(movie.vote_average)"></Rate>
                         </div>
-                        <div v-if="movie.overview.length > 0" class="overview-scroll">{{movie.overview}}</div>
-                        <div v-else>nessuna descrizione</div>
+                        <div v-if="movie.overview.length > 0" class="overview-card overview-scroll">{{movie.overview}}</div>
+                        <div class="emptyOverview-card" v-else>nessuna descrizione</div>
                     </div>
                 </div>
             </div> 
         </div>
 
-
-
-        <div class="row gy-3 gx-2">
-            <h2>serie tv</h2>
+        
+        <h2 class="text-start text-white">serie tv</h2>
+        <div class="row flex-nowrap overflow-x gy-3 gx-2">
             <div class="flip-card-container col-2" v-for="show in tvShow" :key="show.id">
                 <div class="flip-card">
                     <div class="flip-card-front">
@@ -72,6 +80,7 @@
 import axios from "axios"
 import LangFlag from "../../node_modules/vue-lang-code-flags/LangFlag.vue"
 import Rate from '../../node_modules/vue-rate/src/Rate.vue';
+
 
 export default {
     name: "HeaderSite",
@@ -116,7 +125,51 @@ export default {
 </script>
 
 
+
+
+
 <style lang="scss">
+
+
+
+
+
+
+
+
+
+
+#header{
+    img{
+        width: 100px;
+        height: 30px;
+        padding: 0;
+        margin-left: -10px;
+    }
+    ul{
+        li{
+            float: left;
+            margin: 0 10px;
+            list-style: none;
+            a{
+                text-decoration: none;
+                color: #fff;
+            }
+        }
+    }
+    input{
+        border-color: white;
+        padding: 3px;
+    }
+}
+.row{
+    h2{
+        text-transform: uppercase;
+        color: white;
+        text-align: left;
+    }
+}
+
 
 span{
     font-weight: bold;
@@ -131,18 +184,46 @@ lang-flag{
 img{
     height: 300px;
 }
-
-
-
-.max-height-backdrop{
-    height: 100px;
+.overflow-x{
+    overflow-x: scroll;
+    scrollbar-width: thin;
+    overflow-y: hidden;
 }
-.overview-scroll{
-    position: absolute;
-    bottom: 0;
-    max-height: 200px;
-    overflow-y: scroll;
+
+.flip-card-back{
+    .backprop-card{
+        height: 125px;
+    }
+    .title-card{
+        font-size: 12px;
+        height: 50px;
+    }
+    .originalTitle-card{
+        font-size: 12px;
+        height: 50px;
+    }
+    .lenguage-card{
+        height: 25px;
+    }
+    .vote-card{
+        height: 25px;
+    }
+    .overview-card{
+        overflow-y: scroll;
+        height: 125px;
+    }
+    .emptyOverview-card{
+        height: 125px;
+    }
+    .overview-scroll{
+        position: absolute;
+        bottom: 0;
+        max-height: 200px;
+        overflow-y: scroll;
+    }
 }
+
+
 .flip-card-container {
   height: 400px;
   perspective: 1000px;
@@ -171,7 +252,7 @@ img{
   color: #fff;
 }
 .flip-card-back {
-  background-color: #517fa4;
+  background-color: #333;
   color: #fff;
   transform: rotateY(180deg);
 }

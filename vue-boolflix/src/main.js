@@ -5,6 +5,11 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import LangFlag from 'vue-lang-code-flags'
 Vue.component('lang-flag', LangFlag)
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faMagnifyingGlass, faArrowRight, faArrowDown } from '@fortawesome/free-solid-svg-icons'
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+library.add(faMagnifyingGlass, faArrowRight, faArrowDown)
 
 
 Vue.config.productionTip = false
