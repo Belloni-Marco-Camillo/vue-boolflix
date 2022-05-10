@@ -10,30 +10,59 @@
             >
             <button @click="SearchMovies(), SearchShow()">cerca film</button>
         </div>
-        <div class="row">
+
+
+
+
+
+        <div class="row gy-3 gx-2">
             <h2>film</h2>
-            <div class="card-film col-2" v-for="movie in movieList" :key="movie.id">
-                <img class="col-12 max-height" v-if="movie.poster_path !== null" :src="'https://image.tmdb.org/t/p/w342'+movie.poster_path">
-                <img class="col-12 img-dimension" v-else :src="'https://upload.wikimedia.org/wikipedia/en/d/d6/Image_coming_soon.png'">
-                <div class="title_film"> <span>titolo: </span>  {{movie.title}}</div>
-                <div class="title_film"> <span>titolo originale: </span> {{movie.original_title}}</div>
-                <lang-flag :iso="movie.original_language" />
-                <Rate class="d-flex" :length="5" :value="vote(movie.vote_average)"></Rate>
-                
+            <div class="flip-card-container col-2" v-for="movie in movieList" :key="movie.id">
+                <div class="flip-card">
+                    <div class="flip-card-front">
+                        <img class="col-12 max-height" v-if="movie.poster_path !== null" :src="'https://image.tmdb.org/t/p/w342'+movie.poster_path">
+                        <img class="col-12 img-dimension" v-else :src="'https://upload.wikimedia.org/wikipedia/en/d/d6/Image_coming_soon.png'">
+                    </div>
+                    <div class="flip-card-back">
+                        <div> <span>titolo: </span>  {{movie.title}}</div>
+                        <div> <span>titolo originale: </span> {{movie.original_title}}</div>
+                        <lang-flag :iso="movie.original_language" />
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class="col-2"> {{movie.vote_average}}</div>
+                            <Rate :readonly="true" class="rate-width" :length="5" :value="vote(movie.vote_average)"></Rate>
+                        </div>
+                        <div v-if="movie.overview.length > 0" class="overview-scroll">{{movie.overview}}</div>
+                        <div v-else>nessuna descrizione</div>
+                    </div>
+                </div>
             </div> 
         </div>
-        
-        <div class="row">
+
+
+
+        <div class="row gy-3 gx-2">
             <h2>serie tv</h2>
-            <div class="card-film col-2" v-for="show in tvShow" :key="show.id">
-                <img class="col-12 max-height" v-if="show.poster_path !== null" :src="'https://image.tmdb.org/t/p/w342'+show.poster_path">
-                <img class="col-12 img-dimension" v-else :src="'https://upload.wikimedia.org/wikipedia/en/d/d6/Image_coming_soon.png'">
-                <div class="title_film"> <span>titolo: </span>  {{show.name}}</div>
-                <div class="title_film"> <span>titolo originale: </span>  {{show.original_name}}</div>
-                <div class="title_film"> <span>lingua originale: </span>  {{show.original_language}}</div>
-                <Rate class="d-flex" :length="5" :value="vote(show.vote_average)"></Rate>
+            <div class="flip-card-container col-2" v-for="show in tvShow" :key="show.id">
+                <div class="flip-card">
+                    <div class="flip-card-front">
+                        <img class="col-12 max-height" v-if="show.poster_path !== null" :src="'https://image.tmdb.org/t/p/w342'+show.poster_path">
+                        <img class="col-12 img-dimension" v-else :src="'https://upload.wikimedia.org/wikipedia/en/d/d6/Image_coming_soon.png'">
+                    </div>
+                    <div class="flip-card-back">
+                        <div> <span>titolo: </span>  {{show.name}}</div>
+                        <div> <span>titolo originale: </span> {{show.original_name}}</div>
+                        <lang-flag :iso="show.original_language" />
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class="col-2"> {{show.vote_average}}</div>
+                            <Rate :readonly="true" class="rate-width" :length="5" :value="vote(show.vote_average)"></Rate>
+                        </div>
+                        <div v-if="show.overview.length > 0" class="overview-scroll">{{show.overview}}</div>
+                        <div v-else>nessuna descrizione</div>
+                    </div>
+                </div>
             </div> 
         </div>
+
             
         
     </div>
@@ -88,16 +117,81 @@ export default {
 
 
 <style lang="scss">
-.card-film{
-    margin: 30px 0;
-    span{
-        font-weight: bold;
-    }
-    lang-flag{
-        width: 200px;
-    }
+
+span{
+    font-weight: bold;
+}
+lang-flag{
+    width: 200px;
+}
+
+.rate-width *{
+    width: 8px;
 }
 img{
     height: 300px;
+}
+
+
+
+.max-height-backdrop{
+    height: 100px;
+}
+.overview-scroll{
+    position: absolute;
+    bottom: 0;
+    max-height: 200px;
+    overflow-y: scroll;
+}
+.flip-card-container {
+  height: 400px;
+  perspective: 1000px;
+}
+.flip-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 1s;
+  transform-style: preserve-3d;
+}
+.flip-card-container:hover .flip-card {
+  transform: rotateY(180deg); /* <=>  rotateY(.5turn) */
+}
+/* Position the front and back side */
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+  /* border-radius: 0.5rem; */
+}
+.flip-card-front {
+  background-color: #333;
+  color: #fff;
+}
+.flip-card-back {
+  background-color: #517fa4;
+  color: #fff;
+  transform: rotateY(180deg);
+}
+
+.flip-card-front img {
+  width: 100%;
+  height: 100%;
+  /* border-radius: 0.5rem; */
+}
+.flip-card-back p {
+  text-align: center;
+  margin: 1rem;
+  font-size: 1.4rem;
+  line-height: 1.5rem;
+}
+.flip-card-back p span {
+  display: block;
+  font-size: 1rem;
+  font-style: italic;
+  font-weight: bold;
+  margin-top: 1.25rem;
 }
 </style>
