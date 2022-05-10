@@ -23,7 +23,7 @@
 
 
         <h2 class="text-start text-white">film</h2>
-        <div class="row flex-nowrap overflow-x gy-3 gx-2 mb-3">
+        <div id="filmList" class="row flex-nowrap overflow-x gy-3 gx-2 mb-3">
             <div class="flip-card-container col-2" v-for="movie in movieList" :key="movie.id">
                 <div class="flip-card">
                     <div class="flip-card-front">
@@ -47,6 +47,8 @@
             </div> 
         </div>
 
+
+        <div class="prova text-white" @click="SearchActors()">prova funzione</div>
         
         <h2 class="text-start text-white">serie tv</h2>
         <div class="row flex-nowrap overflow-x gy-3 gx-2">
@@ -57,15 +59,17 @@
                         <img class="col-12 img-dimension" v-else :src="'https://upload.wikimedia.org/wikipedia/en/d/d6/Image_coming_soon.png'">
                     </div>
                     <div class="flip-card-back">
-                        <div> <span>titolo: </span>  {{show.name}}</div>
-                        <div> <span>titolo originale: </span> {{show.original_name}}</div>
-                        <lang-flag :iso="show.original_language" />
-                        <div class="d-flex justify-content-center align-items-center">
+                        <img class="backprop-card" v-if="show.poster_path !== null" :src="'https://image.tmdb.org/t/p/w342'+show.backdrop_path">
+                        <div class="backprop-card" v-else> nessuna immagine di copertina </div>
+                        <div class="title-card"> <span>titolo: </span>  {{show.name}}</div>
+                        <div class="originalTitle-card"> <span>titolo originale: </span> {{show.original_name}}</div>
+                        <lang-flag class="lenguage-card" :iso="show.original_language" />
+                        <div  class="vote-card d-flex justify-content-center align-items-center">
                             <div class="col-2"> {{show.vote_average}}</div>
                             <Rate :readonly="true" class="rate-width" :length="5" :value="vote(show.vote_average)"></Rate>
                         </div>
-                        <div v-if="show.overview.length > 0" class="overview-scroll">{{show.overview}}</div>
-                        <div v-else>nessuna descrizione</div>
+                        <div v-if="show.overview.length > 0" class="overview-card overview-scroll">{{show.overview}}</div>
+                        <div class="emptyOverview-card" v-else>nessuna descrizione</div>
                     </div>
                 </div>
             </div> 
@@ -88,12 +92,18 @@ export default {
         return {
             UserSearch: "",
             ThemoviedbApi: "",
+            TheActorApi:"",
             movieList: [],
             tvShow: [],
+            ActorList:[],
         };
     },
     methods: {
         SearchMovies() {
+            if(this.UserSearch == ''){
+                this.movieList=[];
+                return;
+            }
             this.ThemoviedbApi = "https://api.themoviedb.org/3/search/movie?api_key=193243e6ba454e23bb7950ff587b4977&language=it&include_adult=false&query=" + this.UserSearch;
             axios
                 .get(this.ThemoviedbApi)
@@ -103,10 +113,24 @@ export default {
                 return this.movieList;
             });
         },
+        SearchActors() {
+            this.TheActorApi = "https://api.themoviedb.org/3/search/movie?api_key=193243e6ba454e23bb7950ff587b4977&language=it&include_adult=false&query=" + this.UserSearch;
+            axios
+                .get(this.TheActorApi)
+                .then((result) => {
+                this.ActorList = result.data.results;
+                //console.log(this.movieList);
+                return this.ActorList;
+            });
+        },
         vote(voto){
             return Math.round(Number(voto) / 2)
         },
         SearchShow() {
+            if(this.UserSearch == ''){
+                this.tvShow=[];
+                return;
+            }
             this.ThemoviedbApi = "https://api.themoviedb.org/3/search/tv?api_key=193243e6ba454e23bb7950ff587b4977&language=it-IT&query=" + this.UserSearch;
             axios
                 .get(this.ThemoviedbApi)
@@ -192,6 +216,7 @@ img{
 
 .flip-card-back{
     .backprop-card{
+        width: 100%;
         height: 125px;
     }
     .title-card{
