@@ -7,9 +7,9 @@ Vue.component('lang-flag', LangFlag)
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faMagnifyingGlass, faArrowRight, faArrowDown } from '@fortawesome/free-solid-svg-icons'
+import { faMagnifyingGlass, faStar, faArrowRight, faArrowDown } from '@fortawesome/free-solid-svg-icons'
 Vue.component('font-awesome-icon', FontAwesomeIcon)
-library.add(faMagnifyingGlass, faArrowRight, faArrowDown)
+library.add(faStar, faMagnifyingGlass, faArrowRight, faArrowDown)
 
 
 Vue.config.productionTip = false

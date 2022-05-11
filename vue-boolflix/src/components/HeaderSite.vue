@@ -1,89 +1,31 @@
 <template>
-    <div class="container">
-        <div id="header" class="d-flex mb-5 container justify-content-between">
-            <div class="header-sx d-flex">
-                <img src="./../assets/Netflix_logo.svg" alt="logo">
-                <ul class="d-flax text-white">
-                    <li> <a href="#"> home</a></li>
-                    <li> <a href="#"> TV Show</a></li>
-                    <li> <a href="#"> Movies</a></li>
-                    <li> <a href="#"> New & Popular</a></li>
-                    <li> <a href="#"> My List</a></li>
-                </ul>
-            </div>
-            <input
-            type="text" 
-            placeholder="title, people, genres" 
-            v-model="UserSearch"
-            @keyup="SearchMovies(), SearchShow()"
-            >
+    <div id="header" class="d-flex mb-5 container justify-content-between">
+        <div class="header-sx d-flex">
+            <img src="./../assets/Netflix_logo.svg" alt="logo">
+            <ul class="d-flax text-white">
+                <li> <a href="#"> home</a></li>
+                <li> <a href="#"> TV Show</a></li>
+                <li> <a href="#"> Movies</a></li>
+                <li> <a href="#"> New & Popular</a></li>
+                <li> <a href="#"> My List</a></li>
+            </ul>
         </div>
-
-
-
-
-        <h2 class="text-start text-white">film</h2>
-        <div id="filmList" class="row flex-nowrap overflow-x gy-3 gx-2 mb-3">
-            <div class="flip-card-container col-2" v-for="movie in movieList" :key="movie.id">
-                <div class="flip-card">
-                    <div class="flip-card-front">
-                        <img class="col-12 max-height" v-if="movie.poster_path !== null" :src="'https://image.tmdb.org/t/p/w342'+movie.poster_path">
-                        <img class="col-12 img-dimension" v-else :src="'https://upload.wikimedia.org/wikipedia/en/d/d6/Image_coming_soon.png'">
-                    </div>
-                    <div class="flip-card-back">
-                        <img class="backprop-card" v-if="movie.poster_path !== null" :src="'https://image.tmdb.org/t/p/w342'+movie.backdrop_path">
-                        <div class="backprop-card" v-else> nessuna immagine di copertina </div>
-                        <div class="title-card"> <span>titolo: </span>  {{movie.title}}</div>
-                        <div class="originalTitle-card"> <span>titolo originale: </span> {{movie.original_title}}</div>
-                        <lang-flag class="lenguage-card" :iso="movie.original_language" />
-                        <div  class="vote-card d-flex justify-content-center align-items-center">
-                            <div class="col-2"> {{movie.vote_average}}</div>
-                            <Rate :readonly="true" class="rate-width" :length="5" :value="vote(movie.vote_average)"></Rate>
-                        </div>
-                        <div v-if="movie.overview.length > 0" class="overview-card overview-scroll">{{movie.overview}}</div>
-                        <div class="emptyOverview-card" v-else>nessuna descrizione</div>
-                    </div>
-                </div>
-            </div> 
+        <div class="containerLent d-flex"><input
+        type="text" 
+        placeholder="title, people, genres" 
+        v-model="UserSearch"
+        @keyup="SearchMovies(), SearchShow()"
+        @keyup.enter="state()"
+        >
+        <!-- <div @click="move()" class="fontContainer"><font-awesome-icon icon="fa-solid fa-magnifying-glass" /></div> -->
         </div>
-
-
-        <div class="prova text-white" @click="SearchActors()">prova funzione</div>
-        
-        <h2 class="text-start text-white">serie tv</h2>
-        <div class="row flex-nowrap overflow-x gy-3 gx-2">
-            <div class="flip-card-container col-2" v-for="show in tvShow" :key="show.id">
-                <div class="flip-card">
-                    <div class="flip-card-front">
-                        <img class="col-12 max-height" v-if="show.poster_path !== null" :src="'https://image.tmdb.org/t/p/w342'+show.poster_path">
-                        <img class="col-12 img-dimension" v-else :src="'https://upload.wikimedia.org/wikipedia/en/d/d6/Image_coming_soon.png'">
-                    </div>
-                    <div class="flip-card-back">
-                        <img class="backprop-card" v-if="show.poster_path !== null" :src="'https://image.tmdb.org/t/p/w342'+show.backdrop_path">
-                        <div class="backprop-card" v-else> nessuna immagine di copertina </div>
-                        <div class="title-card"> <span>titolo: </span>  {{show.name}}</div>
-                        <div class="originalTitle-card"> <span>titolo originale: </span> {{show.original_name}}</div>
-                        <lang-flag class="lenguage-card" :iso="show.original_language" />
-                        <div  class="vote-card d-flex justify-content-center align-items-center">
-                            <div class="col-2"> {{show.vote_average}}</div>
-                            <Rate :readonly="true" class="rate-width" :length="5" :value="vote(show.vote_average)"></Rate>
-                        </div>
-                        <div v-if="show.overview.length > 0" class="overview-card overview-scroll">{{show.overview}}</div>
-                        <div class="emptyOverview-card" v-else>nessuna descrizione</div>
-                    </div>
-                </div>
-            </div> 
-        </div>
-
-            
-        
     </div>
 </template>
 
 <script>
 import axios from "axios"
-import LangFlag from "../../node_modules/vue-lang-code-flags/LangFlag.vue"
-import Rate from '../../node_modules/vue-rate/src/Rate.vue';
+import state from '@/state.js';
+
 
 
 export default {
@@ -99,6 +41,10 @@ export default {
         };
     },
     methods: {
+/*         move(){
+            let move = document.getElementsByClassName('fontContainer');
+            move.style.left("-180px");
+        }, */
         SearchMovies() {
             if(this.UserSearch == ''){
                 this.movieList=[];
@@ -111,16 +57,6 @@ export default {
                 this.movieList = result.data.results;
                 //console.log(this.movieList);
                 return this.movieList;
-            });
-        },
-        SearchActors() {
-            this.TheActorApi = "https://api.themoviedb.org/3/search/movie?api_key=193243e6ba454e23bb7950ff587b4977&language=it&include_adult=false&query=" + this.UserSearch;
-            axios
-                .get(this.TheActorApi)
-                .then((result) => {
-                this.ActorList = result.data.results;
-                //console.log(this.movieList);
-                return this.ActorList;
             });
         },
         vote(voto){
@@ -136,15 +72,19 @@ export default {
                 .get(this.ThemoviedbApi)
                 .then((result) => {
                 this.tvShow = result.data.results;
-                console.log(this.tvShow);
+                //console.log(this.tvShow);
                 return this.tvShow;
             });
         },
+        state(){
+            //console.log(this.movieList);
+            //console.log(this.tvShow);
+            state.movieList = this.movieList;
+            state.tvShow = this.tvShow;
+            console.log(state);
+        }
     },
-    components: { 
-        LangFlag,
-        Rate,
-    }
+    
 }
 </script>
 
@@ -185,7 +125,28 @@ export default {
         border-color: white;
         padding: 3px;
     }
+    .containerLent{
+        height: 30px;
+        position: relative;
+        input{
+            position: relative;
+            
+            right: 0px;
+        }
+        .fontContainer{
+            position: absolute;
+            color: white;
+            padding: 10px 0 10px 155px;
+            background-color: #333;
+            z-index: 10;
+        }
+    }
 }
+
+
+
+
+
 .row{
     h2{
         text-transform: uppercase;
@@ -193,6 +154,9 @@ export default {
         text-align: left;
     }
 }
+
+
+
 
 
 span{
