@@ -59,9 +59,9 @@ export default {
                 return this.movieList;
             });
         },
-        vote(voto){
+        /* vote(voto){
             return Math.round(Number(voto) / 2)
-        },
+        }, */
         SearchShow() {
             if(this.UserSearch == ''){
                 this.tvShow=[];

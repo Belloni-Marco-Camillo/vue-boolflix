@@ -2,10 +2,11 @@
 
   <div id="app">
 
-<button @click="FilterMove()"></button>
+<button @click="FilterMove(), FilterTv()"></button>
 
     <div class="container">
         <HeaderSite />
+        <filmContainer />
     <h2 class="text-start text-white">film</h2>
         <div id="filmList" class="row flex-nowrap overflow-x gy-3 gx-2 mb-3">
             <div class="flip-card-container col-2" v-for="movie in movieList" :key="movie.id">
@@ -20,10 +21,10 @@
                         <div class="title-card"> <span>titolo: </span>  {{movie.title}}</div>
                         <div class="originalTitle-card"> <span>titolo originale: </span> {{movie.original_title}}</div>
                         <lang-flag class="lenguage-card" :iso="movie.original_language" />
-                        <div  class="vote-card d-flex justify-content-center align-items-center">
+                        <!-- <div  class="vote-card d-flex justify-content-center align-items-center">
                             <div class="col-2"> {{movie.vote_average}}</div>
                             <Rate :readonly="true" class="rate-width" :length="5" :value="vote(movie.vote_average)"></Rate>
-                        </div>
+                        </div> -->
                         <div v-if="movie.overview.length > 0" class="overview-card overview-scroll">{{movie.overview}}</div>
                         <div class="emptyOverview-card" v-else>nessuna descrizione</div>
                     </div>
@@ -46,10 +47,10 @@
                         <div class="title-card"> <span>titolo: </span>  {{show.name}}</div>
                         <div class="originalTitle-card"> <span>titolo originale: </span> {{show.original_name}}</div>
                         <lang-flag class="lenguage-card" :iso="show.original_language" />
-                        <div  class="vote-card d-flex justify-content-center align-items-center">
+                        <!-- <div  class="vote-card d-flex justify-content-center align-items-center">
                             <div class="col-2"> {{show.vote_average}}</div>
                             <Rate :readonly="true" class="rate-width" :length="5" :value="vote(show.vote_average)"></Rate>
-                        </div>
+                        </div> -->
                         <div v-if="show.overview.length > 0" class="overview-card overview-scroll">{{show.overview}}</div>
                         <div class="emptyOverview-card" v-else>nessuna descrizione</div>
                     </div>
@@ -66,7 +67,7 @@
 <script>
 import HeaderSite from './components/HeaderSite.vue';
 import LangFlag from "../node_modules/vue-lang-code-flags/LangFlag.vue"
-import Rate from '../node_modules/vue-rate/src/Rate.vue';
+/* import Rate from '../node_modules/vue-rate/src/Rate.vue'; */
 import state from '@/state.js';
 
 
@@ -76,19 +77,30 @@ export default {
   data() {
         return {
             movieList: [],
+            tvShow:[],
         };
     },
   
   components: {
     LangFlag,
-    Rate,
+    /* Rate, */
     HeaderSite,
   },
-  computed: {
+methods: {
     FilterMove() {
-        movieList=state.movieList;
-    }
-  },
+        this.movieList=state.movieList;
+        return this.movieList,
+        console.log(this.movieList);
+
+        
+    },
+    FilterTv(){
+        this.tvShow=state.tvShow;
+        return this.tvShow,
+        console.log(this.tvShow);
+    },
+},
+   
 }
 </script>
 
